@@ -10,13 +10,55 @@
  * @returns {string} The solved puzzle or 'Error' if no unique solution exists
  */
 function crosswordSolver(puzzle, words) {
+  // Input validation: check types
+  if (typeof puzzle !== 'string') {
+    console.log('Error');
+    return 'Error';
+  }
+  
+  if (!Array.isArray(words)) {
+    console.log('Error');
+    return 'Error';
+  }
+  
+  // Input validation: check empty puzzle
+  if (puzzle === '') {
+    console.log('Error');
+    return 'Error';
+  }
+  
+  // Input validation: check if all words are strings
+  if (!words.every(word => typeof word === 'string')) {
+    console.log('Error');
+    return 'Error';
+  }
+  
+  // Input validation: check for duplicate words
+  const wordSet = new Set(words);
+  if (wordSet.size !== words.length) {
+    console.log('Error');
+    return 'Error';
+  }
+  
   // Parse the puzzle into a 2D grid
   const grid = puzzle.split('\n').map(row => row.split(''));
   const height = grid.length;
   const width = grid[0].length;
+  
+  // Validate that grid has consistent width
+  for (let i = 0; i < height; i++) {
+    if (grid[i].length !== width) {
+      console.log('Error');
+      return 'Error';
+    }
+  }
+  
+  // Store the original grid for restoration during backtracking
+  const originalGrid = grid.map(row => [...row]);
 
   // Find all word slots (horizontal and vertical)
   const slots = [];
+  const seenPositions = new Set();
   
   for (let row = 0; row < height; row++) {
     for (let col = 0; col < width; col++) {
@@ -24,6 +66,20 @@ function crosswordSolver(puzzle, words) {
       
       // Check if this is a starting position (a number, but not '0' and not '.')
       if (cell !== '.' && cell !== '0' && !isNaN(cell) && cell !== '') {
+        // Validate that numbers are only 1 or 2
+        const num = parseInt(cell);
+        if (num < 1 || num > 2) {
+          console.log('Error');
+          return 'Error';
+        }
+        
+        // Each cell position should only be processed once
+        const posKey = `${row},${col}`;
+        if (seenPositions.has(posKey)) {
+          continue;
+        }
+        seenPositions.add(posKey);
+        
         // Check for horizontal word starting from this position
         if (col === 0 || grid[row][col - 1] === '.') {
           let length = 0;
@@ -171,7 +227,8 @@ function crosswordSolver(puzzle, words) {
     for (let i = 0; i < length; i++) {
       const r = horizontal ? row : row + i;
       const c = horizontal ? col + i : col;
-      grid[r][c] = '0'; // Reset to empty marker
+      // Restore to original cell value
+      grid[r][c] = originalGrid[r][c];
     }
   }
 
