@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crossword Solver - Interactive Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .test-section p {
+            margin: 10px 0;
+        }
+        pre {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .output {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .output.success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+            border-left: 4px solid #28a745;
+        }
+        .output.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+            border-left: 4px solid #dc3545;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #2196F3;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧩 Crossword Solver - Interactive Tester</h1>
+            <p>Test your crossword puzzle solver function</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h3>📖 How to Use:</h3>
+                <ol>
+                    <li>Click "Run Test" for each test case below</li>
+                    <li>Check the output section to see the results</li>
+                    <li>Open the browser console (F12) for detailed logs</li>
+                    <li>A checkmark ✓ means test passed, ✗ means test failed</li>
+                </ol>
+            </div>
+
+            <div class="test-section">
+                <h2>Test 1: Basic Example (Should Succeed)</h2>
+                <p><strong>Puzzle:</strong></p>
+                <pre>2001
+0..0
+1000
+0..0</pre>
+                <p><strong>Words:</strong> ['casa', 'alan', 'ciao', 'anta']</p>
+                <p><strong>Expected output:</strong> Solved puzzle with correct word placement</p>
+                <div class="button-group">
+                    <button onclick="runTest(1)">Run Test 1</button>
+                </div>
+                <div id="output1" class="output"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Test 2: Two Words, Two Slots</h2>
+                <p><strong>Puzzle:</strong></p>
+                <pre>200
+0.0
+000</pre>
+                <p><strong>Words:</strong> ['abc', 'abd']</p>
+                <p><strong>Expected output:</strong> Solved puzzle with two intersecting words or Error if no solution</p>
+                <div class="button-group">
+                    <button onclick="runTest(2)">Run Test 2</button>
+                </div>
+                <div id="output2" class="output"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Test 3: Wrong Word Count (Should Return Error)</h2>
+                <p><strong>Puzzle:</strong></p>
+                <pre>2001
+0..0
+1000
+0..0</pre>
+                <p><strong>Words:</strong> ['casa', 'alan', 'ciao'] (only 3 words, need 4)</p>
+                <p><strong>Expected output:</strong> Error</p>
+                <div class="button-group">
+                    <button onclick="runTest(3)">Run Test 3</button>
+                </div>
+                <div id="output3" class="output"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Test 4: No Valid Solution (Should Return Error)</h2>
+                <p><strong>Puzzle:</strong></p>
+                <pre>2001
+0..0
+1000
+0..0</pre>
+                <p><strong>Words:</strong> ['xxxx', 'yyyy', 'zzzz', 'wwww'] (no valid arrangement)</p>
+                <p><strong>Expected output:</strong> Error</p>
+                <div class="button-group">
+                    <button onclick="runTest(4)">Run Test 4</button>
+                </div>
+                <div id="output4" class="output"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Run All Tests</h2>
+                <p>Execute all test cases at once to verify everything works correctly.</p>
+                <div class="button-group">
+                    <button onclick="runAllTests()">Run All Tests</button>
+                    <button onclick="clearAllOutputs()">Clear Results</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💡 Tip: Open your browser's Developer Console (F12) to see detailed logs and any error messages.</p>
+            <p>Crossword Solver © 2026 - Learning Implementation</p>
+        </div>
+    </div>
+
+    <script>
+        // CROSSWORD SOLVER FUNCTION
+        // Complete implementation from crosswordSolver.js
+        
+        function crosswordSolver(puzzle, words) {
+            const grid = puzzle.split('\n').map(row => row.split(''));
+            const height = grid.length;
+            const width = grid[0].length;
+            
+            const slots = [];
+            
+            for (let row = 0; row < height; row++) {
+                for (let col = 0; col < width; col++) {
+                    const cell = grid[row][col];
+                    
+                    if (cell !== '.' && cell !== '0' && !isNaN(cell)) {
+                        if (col === 0 || grid[row][col - 1] === '.') {
+                            let length = 0;
+                            let c = col;
+                            while (c < width && grid[row][c] !== '.') {
+                                length++;
+                                c++;
+                            }
+                            if (length > 1) {
+                                slots.push({ row, col, horizontal: true, length });
+                            }
+                        }
+                        
+                        if (row === 0 || grid[row - 1][col] === '.') {
+                            let length = 0;
+                            let r = row;
+                            while (r < height && grid[r][col] !== '.') {
+                                length++;
+                                r++;
+                            }
+                            if (length > 1) {
+                                slots.push({ row, col, horizontal: false, length });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (words.length !== slots.length) {
+                return 'Error';
+            }
+            
+            const used = new Array(words.length).fill(false);
+            let solutionCount = 0;
+            let solution = null;
+            
+            function backtrack(slotIndex) {
+                if (slotIndex === slots.length) {
+                    solutionCount++;
+                    if (solutionCount === 1) {
+                        solution = grid.map(row => [...row]);
+                    }
+                    return solutionCount <= 1;
+                }
+                
+                const slot = slots[slotIndex];
+                
+                for (let i = 0; i < words.length; i++) {
+                    if (used[i] || words[i].length !== slot.length) continue;
+                    
+                    const word = words[i];
+                    
+                    if (canPlace(word, slot)) {
+                        place(word, slot);
+                        used[i] = true;
+                        
+                        if (!backtrack(slotIndex + 1)) {
+                            remove(word, slot);
+                            used[i] = false;
+                            return false;
+                        }
+                        
+                        remove(word, slot);
+                        used[i] = false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            function canPlace(word, slot) {
+                const { row, col, horizontal, length } = slot;
+                
+                for (let i = 0; i < length; i++) {
+                    const r = horizontal ? row : row + i;
+                    const c = horizontal ? col + i : col;
+                    
+                    if (r >= height || c >= width) return false;
+                    
+                    const cell = grid[r][c];
+                    if (cell !== '0' && cell !== word[i]) return false;
+                }
+                
+                return true;
+            }
+            
+            function place(word, slot) {
+                const { row, col, horizontal, length } = slot;
+                
+                for (let i = 0; i < length; i++) {
+                    const r = horizontal ? row : row + i;
+                    const c = horizontal ? col + i : col;
+                    grid[r][c] = word[i];
+                }
+            }
+            
+            function remove(word, slot) {
+                const { row, col, horizontal, length } = slot;
+                
+                for (let i = 0; i < length; i++) {
+                    const r = horizontal ? row : row + i;
+                    const c = horizontal ? col + i : col;
+                    grid[r][c] = '0';
+                }
+            }
+            
+            backtrack(0);
+            
+            if (solutionCount === 1) {
+                const result = solution.map(row => row.join('')).join('\n');
+                return result;
+            } else {
+                return 'Error';
+            }
+        }
+
+        // TEST RUNNER FUNCTIONS
+
+        function runTest(testNum) {
+            let puzzle, words, expected, description;
+            
+            if (testNum === 1) {
+                puzzle = `2001
+0..0
+1000
+0..0`;
+                words = ['casa', 'alan', 'ciao', 'anta'];
+                expected = `casa
+i..l
+anta
+o..n`;
+                description = "Basic Example";
+            } else if (testNum === 2) {
+                puzzle = `200
+0.0
+000`;
+                words = ['abc', 'abd'];
+                expected = 'Error';
+                description = "Two Words, Two Slots";
+            } else if (testNum === 3) {
+                puzzle = `2001
+0..0
+1000
+0..0`;
+                words = ['casa', 'alan', 'ciao'];
+                expected = 'Error';
+                description = "Wrong Word Count";
+            } else if (testNum === 4) {
+                puzzle = `2001
+0..0
+1000
+0..0`;
+                words = ['xxxx', 'yyyy', 'zzzz', 'wwww'];
+                expected = 'Error';
+                description = "No Valid Solution";
+            }
+            
+            const result = crosswordSolver(puzzle, words);
+            const output = document.getElementById('output' + testNum);
+            
+            const passed = result === expected;
+            output.style.display = 'block';
+            
+            let displayText = `Test: ${description}\n\n`;
+            displayText += `Result:\n${result}\n\n`;
+            displayText += `Expected:\n${expected}`;
+            
+            if (passed) {
+                output.className = 'output success';
+                displayText = '✓ TEST PASSED!\n\n' + displayText;
+                console.log(`✓ Test ${testNum} (${description}): PASSED`);
+            } else {
+                output.className = 'output error';
+                displayText = '✗ TEST FAILED!\n\n' + displayText;
+                console.log(`✗ Test ${testNum} (${description}): FAILED`);
+            }
+            
+            output.textContent = displayText;
+        }
+
+        function runAllTests() {
+            console.clear();
+            console.log('🧩 Running all Crossword Solver tests...\n');
+            runTest(1);
+            runTest(2);
+            runTest(3);
+            runTest(4);
+            console.log('\n✓ All tests completed!');
+        }
+
+        function clearAllOutputs() {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('output' + i).style.display = 'none';
+            }
+        }
+
+        // Log a welcome message
+        console.log('%c🧩 Crossword Solver - Test Suite', 'color: #667eea; font-size: 16px; font-weight: bold;');
+        console.log('To run tests, click the buttons above or execute: runTest(1), runTest(2), etc.');
+    </script>
+</body>
+</html>
