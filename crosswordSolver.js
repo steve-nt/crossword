@@ -1,8 +1,29 @@
 /**
- * CROSSWORD SOLVER
+ * CROSSWORD SOLVER - Backtracking Algorithm
  * 
- * This function solves an empty crossword puzzle by finding the unique placement
- * of all given words that satisfies all puzzle constraints.
+ * Solves an empty crossword puzzle by finding the UNIQUE placement of all given
+ * words that satisfies all puzzle constraints. The algorithm uses backtracking
+ * to explore all possible word arrangements.
+ * 
+ * Algorithm Steps:
+ * 1. Validate all inputs (types, values, constraints)
+ * 2. Parse the puzzle into a 2D grid
+ * 3. Identify all word slots (horizontal and vertical starting positions)
+ * 4. Use backtracking to try all possible word placements
+ * 5. Stop after finding 2 solutions (to check uniqueness)
+ * 6. Return the solved puzzle only if exactly 1 solution exists
+ * 
+ * Puzzle Format:
+ * - Numbers (1-2): Starting positions for words (not part of the solution)
+ * - Dots (.): Blocked/unavailable cells
+ * - Zeros (0): Empty cells available for letters
+ * - Newlines (\n): Row separators
+ * 
+ * Example Input:
+ *   2001       ← Row with starting positions
+ *   0..0       ← Row with blocked cells
+ *   1000       ← Row with starting positions
+ *   0..0       ← Row with blocked cells
  * 
  * @param {string} puzzle - The empty puzzle as a string with numbers (word starts),
  *                          dots (blocked spaces), and newlines (row separators)
@@ -10,30 +31,35 @@
  * @returns {string} The solved puzzle or 'Error' if no unique solution exists
  */
 function crosswordSolver(puzzle, words) {
-  // Input validation: check types
+  // ============================================================================
+  // PHASE 1: INPUT VALIDATION
+  // ============================================================================
+  // Validate that puzzle is a string (required for the algorithm to work)
   if (typeof puzzle !== 'string') {
     console.log('Error');
     return 'Error';
   }
   
+  // Validate that words is an array (required for iteration)
   if (!Array.isArray(words)) {
     console.log('Error');
     return 'Error';
   }
   
-  // Input validation: check empty puzzle
+  // Validate that puzzle is not empty (an empty puzzle has no slots to fill)
   if (puzzle === '') {
     console.log('Error');
     return 'Error';
   }
   
-  // Input validation: check if all words are strings
+  // Validate that all items in the words array are strings
   if (!words.every(word => typeof word === 'string')) {
     console.log('Error');
     return 'Error';
   }
   
-  // Input validation: check for duplicate words
+  // Validate that there are no duplicate words in the array
+  // Using a Set to track unique words - if size differs from length, duplicates exist
   const wordSet = new Set(words);
   if (wordSet.size !== words.length) {
     console.log('Error');
