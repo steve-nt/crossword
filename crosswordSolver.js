@@ -155,12 +155,33 @@ function crosswordSolver(puzzle, words) {
   function backtrack(slotIndex) {
     // All slots filled - we found a complete solution!
     if (slotIndex === slots.length) {
-      solutionCount++;
-      if (solutionCount === 1) {
-        // Save the first solution found
-        solution = grid.map(row => [...row]);
+      // Validate that this solution has no letter conflicts at word intersections
+      let isValid = true;
+      
+      // Create a temporary verification: reconstruct words from grid and check they match
+      for (let slotIdx = 0; slotIdx < slots.length; slotIdx++) {
+        const slot = slots[slotIdx];
+        let foundWord = '';
+        for (let i = 0; i < slot.length; i++) {
+          const r = slot.horizontal ? slot.row : slot.row + i;
+          const c = slot.horizontal ? slot.col + i : slot.col;
+          foundWord += grid[r][c];
+        }
+        // foundWord must be one of the input words
+        if (!words.includes(foundWord)) {
+          isValid = false;
+          break;
+        }
       }
-      // Return false to stop after finding 2 solutions (we only need to know if there's 1 unique solution)
+      
+      if (isValid) {
+        solutionCount++;
+        if (solutionCount === 1) {
+          // Save the first solution found
+          solution = grid.map(row => [...row]);
+        }
+      }
+      // Return false to stop after finding 2 valid solutions (we only need to know if there's 1 unique solution)
       return solutionCount <= 1;
     }
 
@@ -216,9 +237,13 @@ function crosswordSolver(puzzle, words) {
       
       const cell = grid[r][c];
       // Cell must be empty, a number (starting position), or match the letter from the word
-      // Numbers are treated as empty slots (will be overwritten when placing words)
       if (cell === '.') return false; // Can't place on blocked spaces
-      if (cell !== '0' && !isNaN(cell)) continue; // Number starting position is OK
+      if (cell !== '0' && !isNaN(cell)) {
+        // Number starting position - only allow if this is the first placement at this slot
+        // or if we're re-placing after backtrack - in which case the perpendicular words
+        // will have been removed too, so there's no conflict yet
+        continue;
+      }
       if (cell !== '0' && cell !== word[i]) return false; // Must match if already has a letter
     }
     
