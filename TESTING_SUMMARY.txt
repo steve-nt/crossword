@@ -1,0 +1,106 @@
+================================================================================
+CROSSWORD SOLVER - COMPREHENSIVE TEST RESULTS
+================================================================================
+
+EDGE CASE TESTS: 8/8 PASSED ✓
+================================================================================
+
+Test 1: Mismatch between puzzle markers and slots
+  Puzzle: 2001\n0..0\n2000\n0..0
+  Words: ['casa', 'alan', 'ciao', 'anta']
+  Issue: 3 number markers but 4 slots
+  Result: Error ✓
+
+Test 2: Starting numbers higher than 2
+  Puzzle: 0001\n0..0\n3000\n0..0
+  Words: ['casa', 'alan', 'ciao', 'anta']
+  Issue: Contains '3' which exceeds valid range (1-2)
+  Result: Error ✓
+
+Test 3: Duplicate words in word list
+  Puzzle: 2001\n0..0\n1000\n0..0
+  Words: ['casa', 'casa', 'ciao', 'anta']
+  Issue: Word 'casa' appears twice (duplicates not allowed)
+  Result: Error ✓
+
+Test 4: Empty puzzle
+  Puzzle: ''
+  Words: ['casa', 'alan', 'ciao', 'anta']
+  Issue: Puzzle cannot be empty
+  Result: Error ✓
+
+Test 5: Wrong format - puzzle as number
+  Puzzle: 123
+  Words: ['casa', 'alan', 'ciao', 'anta']
+  Issue: Puzzle must be a string, not a number
+  Result: Error ✓
+
+Test 6: Wrong format - words as number
+  Puzzle: 2001\n0..0\n1000\n0..0
+  Words: 123
+  Issue: Words must be an array, not a number
+  Result: Error ✓
+
+Test 7: Multiple solutions exist
+  Puzzle: 2000\n0...\n0...\n0...
+  Words: ['abba', 'assa']
+  Issue: Puzzle has more than one valid solution
+  Result: Error ✓ (Function requires unique solution)
+
+Test 8: No valid solution
+  Puzzle: 2001\n0..0\n1000\n0..0
+  Words: ['aaab', 'aaac', 'aaad', 'aaae']
+  Issue: No valid arrangement of these words fits the puzzle
+  Result: Error ✓
+
+
+FOOD PUZZLE TEST: 1/1 PASSED ✓
+================================================================================
+
+Puzzle: 11x11 grid with food words
+Words: ['popcorn', 'fruit', 'flour', 'chicken', 'eggs', 'vegetables', 
+        'pasta', 'pork', 'steak', 'cheese']
+
+Solution Found:
+  ..p.f..v...
+  flour..eggs
+  ..p.u..g...
+  ..chicken..
+  ..o.t..t...
+  pork..pasta
+  ..n.s..b...
+  ....t..l...
+  ..cheese...
+  ....a..s...
+  ....k......
+
+Result: Correct unique solution found ✓
+
+
+VALIDATION FIXES APPLIED:
+================================================================================
+
+1. Invalid solution filtering
+   - Added reconstruction validation in backtracking
+   - Verifies each completed solution contains only valid words
+   - Rejects solutions with invalid letter combinations
+
+2. Starting position marker validation
+   - Count of numbered positions must equal number of slots
+   - Prevents ambiguous or malformed puzzles
+   - Returns Error for mismatches
+
+3. Input format validation
+   - Puzzle must be a non-empty string
+   - Words must be an array of non-duplicate strings
+   - All items in words array must be strings
+
+4. Range validation
+   - Starting position numbers must be 1 or 2
+   - Numbers outside this range return Error
+
+5. Uniqueness validation
+   - Duplicate words in word list return Error
+   - Only accepts solutions with exactly 1 valid arrangement
+
+================================================================================
