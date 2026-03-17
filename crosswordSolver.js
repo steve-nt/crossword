@@ -106,6 +106,8 @@ function crosswordSolver(puzzle, words) {
         }
         seenPositions.add(posKey);
         
+        let slotsAtThisPosition = 0;
+        
         // Check for horizontal word starting from this position
         if (col === 0 || grid[row][col - 1] === '.') {
           let length = 0;
@@ -116,6 +118,7 @@ function crosswordSolver(puzzle, words) {
           }
           if (length > 1) {
             slots.push({ row, col, horizontal: true, length });
+            slotsAtThisPosition++;
           }
         }
         
@@ -129,16 +132,17 @@ function crosswordSolver(puzzle, words) {
           }
           if (length > 1) {
             slots.push({ row, col, horizontal: false, length });
+            slotsAtThisPosition++;
           }
+        }
+        
+        // Validate that the number at this position matches the actual number of slots
+        if (num !== slotsAtThisPosition) {
+          console.log('Error');
+          return 'Error';
         }
       }
     }
-  }
-
-  // Validate: the number of starting position markers should match the number of slots
-  if (seenPositions.size !== slots.length) {
-    console.log('Error');
-    return 'Error';
   }
 
   // Validate: correct number of words for slots
@@ -309,8 +313,3 @@ function crosswordSolver(puzzle, words) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = crosswordSolver;
 }
-
-const puzzle = '2001\n0..0\n3000\n0..0'
-const words = ['casa', 'alan', 'ciao', 'anta']
-
-crosswordSolver(puzzle, words)
