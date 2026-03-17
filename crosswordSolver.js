@@ -135,6 +135,12 @@ function crosswordSolver(puzzle, words) {
     }
   }
 
+  // Validate: the number of starting position markers should match the number of slots
+  if (seenPositions.size !== slots.length) {
+    console.log('Error');
+    return 'Error';
+  }
+
   // Validate: correct number of words for slots
   if (words.length !== slots.length) {
     console.log('Error');
@@ -303,3 +309,8 @@ function crosswordSolver(puzzle, words) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = crosswordSolver;
 }
+
+const puzzle = '2001\n0..0\n3000\n0..0'
+const words = ['casa', 'alan', 'ciao', 'anta']
+
+crosswordSolver(puzzle, words)
